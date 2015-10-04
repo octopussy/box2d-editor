@@ -30,7 +30,7 @@ public class Main {
 				configuration.width = 800;
 				configuration.height = 600;
 				configuration.fullscreen = false;
-				configuration.useGL30 = true;
+				configuration.useGL30 = false;
 
 				LwjglCanvas glCanvas = new LwjglCanvas(new Canvas(), configuration);
 				MainWindow mw = Ctx.window;
