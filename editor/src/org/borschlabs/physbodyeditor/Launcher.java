@@ -19,6 +19,24 @@ public class Launcher {
    private static final int MARGIN = 15;
 
    public static void main(final String[] args) {
+      try {
+         // Set cross-platform Java L&F (also called "Metal")
+         UIManager.setLookAndFeel(
+            UIManager.getCrossPlatformLookAndFeelClassName());
+      }
+      catch (UnsupportedLookAndFeelException e) {
+         // handle exception
+      }
+      catch (ClassNotFoundException e) {
+         // handle exception
+      }
+      catch (InstantiationException e) {
+         // handle exception
+      }
+      catch (IllegalAccessException e) {
+         // handle exception
+      }
+
       final Injector injector = Guice.createInjector(new ApplicationModule());
 
       SwingUtilities.invokeLater(new Runnable() {

@@ -2,9 +2,7 @@ package aurelienribon.bodyeditor.ui;
 
 import aurelienribon.bodyeditor.Ctx;
 import aurelienribon.bodyeditor.IoManager;
-import aurelienribon.ui.css.Style;
 import aurelienribon.utils.notifications.ChangeListener;
-import com.google.inject.Inject;
 import org.borschlabs.physbodyeditor.ui.EditorWindow;
 import org.json.JSONException;
 
@@ -22,14 +20,13 @@ import java.io.IOException;
 public class ProjectPanel extends javax.swing.JPanel {
    private final EditorWindow editorWindow;
 
-   @Inject
    public ProjectPanel(EditorWindow editorWindow) {
       this.editorWindow = editorWindow;
       initComponents();
 
-      Style.registerCssClasses(headerPanel, ".headerPanel");
+      /*Style.registerCssClasses(headerPanel, ".headerPanel");
       Style.registerCssClasses(saveBtn, ".bold");
-
+*/
       newBtn.addActionListener(new ActionListener() {
          @Override
          public void actionPerformed(ActionEvent e) {

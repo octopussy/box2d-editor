@@ -3,8 +3,6 @@ package aurelienribon.bodyeditor.ui;
 import aurelienribon.bodyeditor.Ctx;
 import aurelienribon.bodyeditor.models.RigidBodyModel;
 import aurelienribon.ui.components.PaintedPanel;
-import aurelienribon.ui.css.Style;
-import aurelienribon.utils.Res;
 import net.java.balloontip.BalloonTip;
 
 import javax.swing.*;
@@ -24,10 +22,12 @@ public class RigidBodiesCreationDialog extends javax.swing.JDialog {
       setContentPane(new PaintedPanel());
       initComponents();
 
+/*
       Style.registerCssClasses(getContentPane(), ".rootPanel", ".configPanel");
       Style.registerCssClasses(orLbl1, ".bigLabel");
       Style.registerCssClasses(orLbl2, ".bigLabel");
       Style.apply(getContentPane(), new Style(Res.getUrl("/css/style.css")));
+*/
 
       b1CreateBtn.addActionListener(new ActionListener() {
          @Override
