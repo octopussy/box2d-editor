@@ -1,11 +1,8 @@
 package aurelienribon.bodyeditor.ui;
 
 import aurelienribon.bodyeditor.Ctx;
-import aurelienribon.ui.components.ArStyle;
-import aurelienribon.ui.components.PaintedPanel;
 import aurelienribon.ui.components.TabPanel;
 import aurelienribon.ui.css.Style;
-import aurelienribon.ui.css.swing.SwingStyle;
 import aurelienribon.utils.Res;
 import aurelienribon.utils.io.HttpUtils;
 import aurelienribon.utils.ui.SwingHelper;
@@ -26,10 +23,10 @@ import java.util.List;
  */
 public class MainWindow extends javax.swing.JFrame {
     public MainWindow() {
-		setContentPane(new PaintedPanel());
+		//setContentPane(new PaintedPanel());
         initComponents();
 
-		SwingStyle.init();
+		/*SwingStyle.init();
 		ArStyle.init();
 		Style.registerCssClasses(getContentPane(), ".rootPanel");
 		Style.registerCssClasses(projectPanel, ".titledPanel", "#projectPanel");
@@ -39,7 +36,7 @@ public class MainWindow extends javax.swing.JFrame {
 		Style.registerCssClasses(versionPanel, ".versionPanel");
 		Style.registerCssClasses(versionLabel, ".versionLabel");
 		Style.apply(getContentPane(), new Style(Res.getUrl("/css/style.css")));
-
+*/
 		objectsPanel.getModel().add(new RigidBodiesPanel(), "Rigid bodies", null, false);
 		objectsPanel.getModel().add(new DynamicObjectsPanel(), "Dynamic objects", null, false);
 		objectsPanel.setHeaderLayout(TabPanel.LAYOUT_GRID);

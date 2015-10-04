@@ -27,7 +27,7 @@ public class RigidBodiesCreationDialog extends javax.swing.JDialog {
 		Style.registerCssClasses(getContentPane(), ".rootPanel", ".configPanel");
 		Style.registerCssClasses(orLbl1, ".bigLabel");
 		Style.registerCssClasses(orLbl2, ".bigLabel");
-		Style.apply(getContentPane(), new Style(Res.getUrl("css/style.css")));
+		Style.apply(getContentPane(), new Style(Res.getUrl("/css/style.css")));
 
 		b1CreateBtn.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {createEmpty();}});
 		b2CreateBtn.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {createFromImage();}});
