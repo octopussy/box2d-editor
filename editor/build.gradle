@@ -1,0 +1,43 @@
+group 'aurelienribon.box2deditor'
+version '2.9-SNAPSHOT'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.6
+/*
+sourceSets.main.java.srcDirs = [ "src/" ]
+sourceSets.main.java.resourcesDirs = [ "res/" ]
+*/
+
+sourceSets {
+    main {
+        //manifest.srcFile 'AndroidManifest.xml'
+        java.srcDirs = ['src']
+       // aidl.srcDirs = ['src']
+        //renderscript.srcDirs = ['src']
+        resources.srcDirs = ['res']
+        //assets.srcDirs = ['assets']
+        //jniLibs.srcDirs = ['libs']
+    }
+}
+
+gdxVersion = '1.7.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'], exclude: ['gdx*.jar'])
+
+    compile 'org.json:json:20150729'
+
+    compile "com.badlogicgames.gdx:gdx:$gdxVersion"
+    compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+    compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+    compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+    compile "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
+    compile "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
+
+    //testCompile group: 'junit', name: 'junit', version: '4.11'
+}
