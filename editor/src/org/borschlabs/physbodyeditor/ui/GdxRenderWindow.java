@@ -1,16 +1,23 @@
 package org.borschlabs.physbodyeditor.ui;
 
+import aurelienribon.bodyeditor.canvas.Canvas;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
 import com.badlogic.gdx.graphics.GL20;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * @author octopussy
  */
+
+@Singleton
 public class GdxRenderWindow extends LwjglFrame {
-   public GdxRenderWindow() {
-      super(new MyAppListener(), "", 0, 0);
+
+   @Inject
+   public GdxRenderWindow(EditorWindow editorWindow) {
+      super(new Canvas(editorWindow), "", 0, 0);
    }
 
    private static class MyAppListener implements ApplicationListener {

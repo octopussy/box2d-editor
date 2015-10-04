@@ -12,6 +12,7 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import org.borschlabs.physbodyeditor.ui.EditorWindow;
 
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/
@@ -19,11 +20,13 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class DynamicObjectsScreen {
 
 	private final Canvas canvas;
+	private final EditorWindow editorWindow;
 	private final TweenManager tweenManager = new TweenManager();
 	private final BodiesList bodiesList;
 
-	public DynamicObjectsScreen(Canvas canvas) {
+	public DynamicObjectsScreen(Canvas canvas, EditorWindow editorWindow) {
 		this.canvas = canvas;
+		this.editorWindow = editorWindow;
 		this.bodiesList = new BodiesList(canvas, canvas.font);
 
 		canvas.input.addProcessor(bodiesListInputProcessor);

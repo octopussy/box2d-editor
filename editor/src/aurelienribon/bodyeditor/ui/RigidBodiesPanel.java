@@ -9,6 +9,9 @@ import aurelienribon.utils.Res;
 import aurelienribon.utils.notifications.AutoListModel;
 import aurelienribon.utils.notifications.ChangeListener;
 import aurelienribon.utils.notifications.ObservableList;
+import com.google.inject.Inject;
+import org.borschlabs.physbodyeditor.Log;
+import org.borschlabs.physbodyeditor.ui.EditorWindow;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -25,389 +28,445 @@ import java.util.List;
  * @author Aurelien Ribon | http://www.aurelienribon.com/
  */
 public class RigidBodiesPanel extends javax.swing.JPanel {
-    public RigidBodiesPanel() {
-        initComponents();
 
-		Style.registerCssClasses(headerPanel, ".headerPanel");
+   private final Log log;
+   private final EditorWindow editorWindow;
 
-		final AutoListModel<RigidBodyModel> listModel = new AutoListModel<RigidBodyModel>(Ctx.bodies.getModels());
-		list.setModel(listModel);
-		list.addListSelectionListener(listSelectionListener);
-		list.setCellRenderer(listCellRenderer);
-		Ctx.bodies.addChangeListener(listModelChangeListener);
+   @Inject
+   public RigidBodiesPanel(Log log, EditorWindow editorWindow) {
+      this.log = log;
+      this.editorWindow = editorWindow;
 
-		createBtn.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {create();}});
-		renameBtn.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {rename();}});
-		deleteBtn.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {delete();}});
-		upBtn.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {moveUp();}});
-		downBtn.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {moveDown();}});
-		repairBtn.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {repair();}});
+      initComponents();
 
-		createBtn.setEnabled(false);
-		renameBtn.setEnabled(false);
-		deleteBtn.setEnabled(false);
-		upBtn.setEnabled(false);
-		downBtn.setEnabled(false);
-		repairBtn.setEnabled(false);
+      Style.registerCssClasses(headerPanel, ".headerPanel");
 
-		Ctx.io.addChangeListener(new ChangeListener() {
-			@Override public void propertyChanged(Object source, String propertyName) {
-				createBtn.setEnabled(Ctx.io.getProjectFile() != null);
-			}
-		});
+      final AutoListModel<RigidBodyModel> listModel = new AutoListModel<RigidBodyModel>(Ctx.bodies.getModels());
+      list.setModel(listModel);
+      list.addListSelectionListener(listSelectionListener);
+      list.setCellRenderer(listCellRenderer);
+      Ctx.bodies.addChangeListener(listModelChangeListener);
 
-		Ctx.objects.addChangeListener(new ChangeListener() {
-			@Override public void propertyChanged(Object source, String propertyName) {
-				if (!propertyName.equals(DynamicObjectsManager.PROP_SELECTION)) return;
-				if (Ctx.objects.getSelectedModel() != null) Ctx.bodies.select(null);
-			}
-		});
+      createBtn.addActionListener(new ActionListener() {
+         @Override
+         public void actionPerformed(ActionEvent e) {
+            create();
+         }
+      });
+      renameBtn.addActionListener(new ActionListener() {
+         @Override
+         public void actionPerformed(ActionEvent e) {
+            rename();
+         }
+      });
+      deleteBtn.addActionListener(new ActionListener() {
+         @Override
+         public void actionPerformed(ActionEvent e) {
+            delete();
+         }
+      });
+      upBtn.addActionListener(new ActionListener() {
+         @Override
+         public void actionPerformed(ActionEvent e) {
+            moveUp();
+         }
+      });
+      downBtn.addActionListener(new ActionListener() {
+         @Override
+         public void actionPerformed(ActionEvent e) {
+            moveDown();
+         }
+      });
+      repairBtn.addActionListener(new ActionListener() {
+         @Override
+         public void actionPerformed(ActionEvent e) {
+            repair();
+         }
+      });
 
-		final ChangeListener modelChangeListener = new ChangeListener() {
-			@Override public void propertyChanged(Object source, String propertyName) {
-				repairBtn.setEnabled(false);
-				for (RigidBodyModel model : Ctx.bodies.getModels()) {
-					if (!model.isImagePathValid()) repairBtn.setEnabled(true);
-				}
-			}
-		};
+      createBtn.setEnabled(false);
+      renameBtn.setEnabled(false);
+      deleteBtn.setEnabled(false);
+      upBtn.setEnabled(false);
+      downBtn.setEnabled(false);
+      repairBtn.setEnabled(false);
 
-		Ctx.bodies.getModels().addListChangedListener(new ObservableList.ListChangeListener<RigidBodyModel>() {
-			@Override public void changed(Object source, List<RigidBodyModel> added, List<RigidBodyModel> removed) {
-				repairBtn.setEnabled(false);
-				for (RigidBodyModel model : Ctx.bodies.getModels()) {
-					if (!model.isImagePathValid()) repairBtn.setEnabled(true);
-				}
+      Ctx.io.addChangeListener(new ChangeListener() {
+         @Override
+         public void propertyChanged(Object source, String propertyName) {
+            createBtn.setEnabled(Ctx.io.getProjectFile() != null);
+         }
+      });
 
-				for (RigidBodyModel m : added) m.addChangeListener(modelChangeListener);
-				for (RigidBodyModel m : removed) m.removeChangeListener(modelChangeListener);
-			}
-		});
-    }
+      Ctx.objects.addChangeListener(new ChangeListener() {
+         @Override
+         public void propertyChanged(Object source, String propertyName) {
+            if (!propertyName.equals(DynamicObjectsManager.PROP_SELECTION)) return;
+            if (Ctx.objects.getSelectedModel() != null) Ctx.bodies.select(null);
+         }
+      });
 
-	private void create() {
-		RigidBodiesCreationDialog dialog = new RigidBodiesCreationDialog(Ctx.window);
-		dialog.setLocationRelativeTo(Ctx.window);
-		dialog.pack();
-		dialog.setVisible(true);
-	}
+      final ChangeListener modelChangeListener = new ChangeListener() {
+         @Override
+         public void propertyChanged(Object source, String propertyName) {
+            repairBtn.setEnabled(false);
+            for (RigidBodyModel model : Ctx.bodies.getModels()) {
+               if (!model.isImagePathValid()) repairBtn.setEnabled(true);
+            }
+         }
+      };
 
-	private void rename() {
-		RigidBodyModel model = Ctx.bodies.getSelectedModel();
-		String name = JOptionPane.showInputDialog(Ctx.window, "New name of the new rigid body?", model.getName());
+      Ctx.bodies.getModels().addListChangedListener(new ObservableList.ListChangeListener<RigidBodyModel>() {
+         @Override
+         public void changed(Object source, List<RigidBodyModel> added, List<RigidBodyModel> removed) {
+            repairBtn.setEnabled(false);
+            for (RigidBodyModel model : Ctx.bodies.getModels()) {
+               if (!model.isImagePathValid()) repairBtn.setEnabled(true);
+            }
 
-		if (name != null) {
-			name = name.trim();
+            for (RigidBodyModel m : added) m.addChangeListener(modelChangeListener);
+            for (RigidBodyModel m : removed) m.removeChangeListener(modelChangeListener);
+         }
+      });
+   }
 
-			if (name.equals("")) {
-				String msg = "Sorry, you cannot use an empty name.";
-				JOptionPane.showMessageDialog(Ctx.window, msg);
-				return;
-			} else if (Ctx.bodies.getModel(name) != null && Ctx.bodies.getModel(name) != model) {
-				String msg = "Sorry, there is already a body with this name.";
-				JOptionPane.showMessageDialog(Ctx.window, msg);
-				return;
-			}
+   private void create() {
+      RigidBodiesCreationDialog dialog = new RigidBodiesCreationDialog(editorWindow);
+      dialog.setLocationRelativeTo(editorWindow);
+      dialog.pack();
+      dialog.setVisible(true);
+   }
 
-			model.setName(name);
-		}
-	}
+   private void rename() {
+      RigidBodyModel model = Ctx.bodies.getSelectedModel();
+      String name = JOptionPane.showInputDialog(editorWindow, "New name of the new rigid body?", model.getName());
 
-	private void delete() {
-		for (Object model : list.getSelectedValuesList()) {
-			Ctx.bodies.getModels().remove((RigidBodyModel) model);
-		}
-	}
+      if (name != null) {
+         name = name.trim();
 
-	private void moveUp() {
-		final List<RigidBodyModel> selectedModels = new ArrayList<RigidBodyModel>(list.getSelectedValuesList());
-		final Map<RigidBodyModel, Integer> idxs = new HashMap<RigidBodyModel, Integer>();
+         if (name.equals("")) {
+            String msg = "Sorry, you cannot use an empty name.";
+            JOptionPane.showMessageDialog(editorWindow, msg);
+            return;
+         } else if (Ctx.bodies.getModel(name) != null && Ctx.bodies.getModel(name) != model) {
+            String msg = "Sorry, there is already a body with this name.";
+            JOptionPane.showMessageDialog(editorWindow, msg);
+            return;
+         }
 
-		assert !selectedModels.isEmpty();
+         model.setName(name);
+      }
+   }
 
-		for (Object model : list.getSelectedValuesList()) {
-			int idx = Ctx.bodies.getModels().indexOf((RigidBodyModel) model);
-			if (idx == 0) return;
-			idxs.put((RigidBodyModel) model, idx);
-		}
+   private void delete() {
+      for (Object model : list.getSelectedValuesList()) {
+         Ctx.bodies.getModels().remove((RigidBodyModel) model);
+      }
+   }
 
-		Collections.sort(selectedModels, new Comparator<RigidBodyModel>() {
-			@Override public int compare(RigidBodyModel o1, RigidBodyModel o2) {
-				int idx1 = idxs.get(o1);
-				int idx2 = idxs.get(o2);
-				if (idx1 < idx2) return -1;
-				if (idx1 > idx2) return 1;
-				return 0;
-			}
-		});
+   private void moveUp() {
+      final List<RigidBodyModel> selectedModels = new ArrayList<RigidBodyModel>(list.getSelectedValuesList());
+      final Map<RigidBodyModel, Integer> idxs = new HashMap<RigidBodyModel, Integer>();
 
-		for (RigidBodyModel model : selectedModels) {
-			int idx = idxs.get(model);
-			Ctx.bodies.getModels().remove(model);
-			Ctx.bodies.getModels().add(idx-1, model);
-		}
+      assert !selectedModels.isEmpty();
 
-		for (RigidBodyModel model : selectedModels) {
-			list.addSelectionInterval(idxs.get(model)-1, idxs.get(model)-1);
-		}
-	}
+      for (Object model : list.getSelectedValuesList()) {
+         int idx = Ctx.bodies.getModels().indexOf((RigidBodyModel) model);
+         if (idx == 0) return;
+         idxs.put((RigidBodyModel) model, idx);
+      }
 
-	private void moveDown() {
-		final List<RigidBodyModel> selectedModels = new ArrayList<RigidBodyModel>(list.getSelectedValuesList());
-		final Map<RigidBodyModel, Integer> idxs = new HashMap<RigidBodyModel, Integer>();
+      Collections.sort(selectedModels, new Comparator<RigidBodyModel>() {
+         @Override
+         public int compare(RigidBodyModel o1, RigidBodyModel o2) {
+            int idx1 = idxs.get(o1);
+            int idx2 = idxs.get(o2);
+            if (idx1 < idx2) return -1;
+            if (idx1 > idx2) return 1;
+            return 0;
+         }
+      });
 
-		assert !selectedModels.isEmpty();
+      for (RigidBodyModel model : selectedModels) {
+         int idx = idxs.get(model);
+         Ctx.bodies.getModels().remove(model);
+         Ctx.bodies.getModels().add(idx - 1, model);
+      }
 
-		for (Object model : list.getSelectedValuesList()) {
-			int idx = Ctx.bodies.getModels().indexOf((RigidBodyModel) model);
-			if (idx == Ctx.bodies.getModels().size()-1) return;
-			idxs.put((RigidBodyModel) model, idx);
-		}
+      for (RigidBodyModel model : selectedModels) {
+         list.addSelectionInterval(idxs.get(model) - 1, idxs.get(model) - 1);
+      }
+   }
 
-		Collections.sort(selectedModels, new Comparator<RigidBodyModel>() {
-			@Override public int compare(RigidBodyModel o1, RigidBodyModel o2) {
-				int idx1 = idxs.get(o1);
-				int idx2 = idxs.get(o2);
-				if (idx1 < idx2) return 1;
-				if (idx1 > idx2) return -1;
-				return 0;
-			}
-		});
+   private void moveDown() {
+      final List<RigidBodyModel> selectedModels = new ArrayList<RigidBodyModel>(list.getSelectedValuesList());
+      final Map<RigidBodyModel, Integer> idxs = new HashMap<RigidBodyModel, Integer>();
 
-		for (RigidBodyModel model : selectedModels) {
-			int idx = idxs.get(model);
-			Ctx.bodies.getModels().remove(model);
-			Ctx.bodies.getModels().add(idx+1, model);
-		}
+      assert !selectedModels.isEmpty();
 
-		for (RigidBodyModel model : selectedModels) {
-			list.addSelectionInterval(idxs.get(model)+1, idxs.get(model)+1);
-		}
-	}
+      for (Object model : list.getSelectedValuesList()) {
+         int idx = Ctx.bodies.getModels().indexOf((RigidBodyModel) model);
+         if (idx == Ctx.bodies.getModels().size() - 1) return;
+         idxs.put((RigidBodyModel) model, idx);
+      }
 
-	private void repair() {
-		RepairImagePathsDialog dialog = new RepairImagePathsDialog(Ctx.window);
-		dialog.setLocationRelativeTo(Ctx.window);
-		dialog.setVisible(true);
-	}
+      Collections.sort(selectedModels, new Comparator<RigidBodyModel>() {
+         @Override
+         public int compare(RigidBodyModel o1, RigidBodyModel o2) {
+            int idx1 = idxs.get(o1);
+            int idx2 = idxs.get(o2);
+            if (idx1 < idx2) return 1;
+            if (idx1 > idx2) return -1;
+            return 0;
+         }
+      });
 
-	// -------------------------------------------------------------------------
-	// ListSelection
-	// -------------------------------------------------------------------------
+      for (RigidBodyModel model : selectedModels) {
+         int idx = idxs.get(model);
+         Ctx.bodies.getModels().remove(model);
+         Ctx.bodies.getModels().add(idx + 1, model);
+      }
 
-	private final ChangeListener listModelChangeListener = new ChangeListener() {
-		@Override
-		public void propertyChanged(Object source, String propertyName) {
-			RigidBodyModel model = Ctx.bodies.getSelectedModel();
-			renameBtn.setEnabled(model != null);
-			deleteBtn.setEnabled(model != null);
-			upBtn.setEnabled(model != null);
-			downBtn.setEnabled(model != null);
+      for (RigidBodyModel model : selectedModels) {
+         list.addSelectionInterval(idxs.get(model) + 1, idxs.get(model) + 1);
+      }
+   }
 
-			list.removeListSelectionListener(listSelectionListener);
-			if (model != null) list.setSelectedValue(model, true);
-			else list.clearSelection();
-			list.addListSelectionListener(listSelectionListener);
-		}
-	};
+   private void repair() {
+      RepairImagePathsDialog dialog = new RepairImagePathsDialog(editorWindow);
+      dialog.setLocationRelativeTo(editorWindow);
+      dialog.setVisible(true);
+   }
 
-	private final ListSelectionListener listSelectionListener = new ListSelectionListener() {
-		@Override
-		public void valueChanged(ListSelectionEvent e) {
-			if (e.getValueIsAdjusting()) return;
-			Ctx.bodies.select((RigidBodyModel) list.getSelectedValue());
-		}
-	};
+   // -------------------------------------------------------------------------
+   // ListSelection
+   // -------------------------------------------------------------------------
 
-	// -------------------------------------------------------------------------
-	// ListCellRenderer
-	// -------------------------------------------------------------------------
+   private final ChangeListener listModelChangeListener = new ChangeListener() {
+      @Override
+      public void propertyChanged(Object source, String propertyName) {
+         RigidBodyModel model = Ctx.bodies.getSelectedModel();
+         renameBtn.setEnabled(model != null);
+         deleteBtn.setEnabled(model != null);
+         upBtn.setEnabled(model != null);
+         downBtn.setEnabled(model != null);
 
-	private final ListCellRenderer<RigidBodyModel> listCellRenderer = new ListCellRenderer<RigidBodyModel> () {
-		private final JPanel panel = new JPanel(new BorderLayout());
-		private final JPanel txtPanel = new JPanel(new BorderLayout());
-		private final JLabel nameLabel = new JLabel();
-		private final JLabel infoLabel = new JLabel();
-		private final ImagePreviewPanel imgPanel = new ImagePreviewPanel();
+         list.removeListSelectionListener(listSelectionListener);
+         if (model != null) list.setSelectedValue(model, true);
+         else list.clearSelection();
+         list.addListSelectionListener(listSelectionListener);
+      }
+   };
 
-		{
-			txtPanel.setOpaque(false);
-			txtPanel.add(nameLabel, BorderLayout.CENTER);
-			txtPanel.add(infoLabel, BorderLayout.SOUTH);
+   private final ListSelectionListener listSelectionListener = new ListSelectionListener() {
+      @Override
+      public void valueChanged(ListSelectionEvent e) {
+         if (e.getValueIsAdjusting()) return;
+         Ctx.bodies.select((RigidBodyModel) list.getSelectedValue());
+      }
+   };
 
-			panel.setBorder(new EmptyBorder(5, 10, 5, 10));
-			panel.add(txtPanel, BorderLayout.CENTER);
-			panel.add(imgPanel, BorderLayout.WEST);
-			panel.setBackground(new Color(0xBBC8D8));
-			infoLabel.setForeground(new Color(0x555555));
+   // -------------------------------------------------------------------------
+   // ListCellRenderer
+   // -------------------------------------------------------------------------
 
-			Font font = nameLabel.getFont();
-			nameLabel.setFont(new Font(font.getName(), Font.BOLD, font.getSize()));
+   private final ListCellRenderer<RigidBodyModel> listCellRenderer = new ListCellRenderer<RigidBodyModel>() {
+      private final JPanel panel = new JPanel(new BorderLayout());
+      private final JPanel txtPanel = new JPanel(new BorderLayout());
+      private final JLabel nameLabel = new JLabel();
+      private final JLabel infoLabel = new JLabel();
+      private final ImagePreviewPanel imgPanel = new ImagePreviewPanel();
 
-			font = infoLabel.getFont();
-			infoLabel.setFont(new Font(font.getName(), font.getStyle(), 10));
+      {
+         txtPanel.setOpaque(false);
+         txtPanel.add(nameLabel, BorderLayout.CENTER);
+         txtPanel.add(infoLabel, BorderLayout.SOUTH);
 
-			imgPanel.setPreferredSize(new Dimension(30, 20));
-			imgPanel.setFill(Color.WHITE);
-			imgPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		}
+         panel.setBorder(new EmptyBorder(5, 10, 5, 10));
+         panel.add(txtPanel, BorderLayout.CENTER);
+         panel.add(imgPanel, BorderLayout.WEST);
+         panel.setBackground(new Color(0xBBC8D8));
+         infoLabel.setForeground(new Color(0x555555));
 
-		@Override
-		public Component getListCellRendererComponent(JList list, RigidBodyModel value, int index, boolean isSelected, boolean cellHasFocus) {
-			nameLabel.setText(value.getName());
+         Font font = nameLabel.getFont();
+         nameLabel.setFont(new Font(font.getName(), Font.BOLD, font.getSize()));
 
-			String imgPath = value.getImagePath();
+         font = infoLabel.getFont();
+         infoLabel.setFont(new Font(font.getName(), font.getStyle(), 10));
 
-			if (imgPath != null) {
-				txtPanel.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 0));
-				imgPanel.setVisible(true);
+         imgPanel.setPreferredSize(new Dimension(30, 20));
+         imgPanel.setFill(Color.WHITE);
+         imgPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+      }
 
-				if (value.isImagePathValid()) {
-					infoLabel.setText(imgPath);
-					try {imgPanel.setImage(Ctx.io.getImageFile(imgPath));} catch (IOException ex) {}
-				} else {
-					infoLabel.setText("[not found] " + imgPath);
-					try {imgPanel.setImage(Res.getUrl("gfx/unknown.png"));} catch (IOException ex) {}
-				}
+      @Override
+      public Component getListCellRendererComponent(JList list, RigidBodyModel value, int index, boolean isSelected, boolean cellHasFocus) {
+         nameLabel.setText(value.getName());
 
-			} else {
-				infoLabel.setText("No associated image");
-				txtPanel.setBorder(null);
-				imgPanel.setVisible(false);
-			}
+         String imgPath = value.getImagePath();
 
-			panel.setOpaque(isSelected);
-			return panel;
-		}
-	};
+         if (imgPath != null) {
+            txtPanel.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 0));
+            imgPanel.setVisible(true);
 
-	// -------------------------------------------------------------------------
-	// Generated stuff
-	// -------------------------------------------------------------------------
+            if (value.isImagePathValid()) {
+               infoLabel.setText(imgPath);
+               try {
+                  imgPanel.setImage(Ctx.io.getImageFile(imgPath));
+               } catch (IOException ex) {
+               }
+            } else {
+               infoLabel.setText("[not found] " + imgPath);
+               try {
+                  imgPanel.setImage(Res.getUrl("gfx/unknown.png"));
+               } catch (IOException ex) {
+               }
+            }
 
-    @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+         } else {
+            infoLabel.setText("No associated image");
+            txtPanel.setBorder(null);
+            imgPanel.setVisible(false);
+         }
 
-        headerPanel = new aurelienribon.ui.components.PaintedPanel();
-        jToolBar1 = new javax.swing.JToolBar();
-        createBtn = new javax.swing.JButton();
-        renameBtn = new javax.swing.JButton();
-        deleteBtn = new javax.swing.JButton();
-        upBtn = new javax.swing.JButton();
-        downBtn = new javax.swing.JButton();
-        jToolBar2 = new javax.swing.JToolBar();
-        repairBtn = new javax.swing.JButton();
-        jPanel1 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        list = new javax.swing.JList();
+         panel.setOpaque(isSelected);
+         return panel;
+      }
+   };
 
-        setLayout(new java.awt.BorderLayout());
+   // -------------------------------------------------------------------------
+   // Generated stuff
+   // -------------------------------------------------------------------------
 
-        jToolBar1.setFloatable(false);
-        jToolBar1.setRollover(true);
+   @SuppressWarnings("unchecked")
+   // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+   private void initComponents() {
 
-        createBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gfx/ic_add.png"))); // NOI18N
-        createBtn.setText("New");
-        createBtn.setToolTipText("Create a new model");
-        createBtn.setFocusable(false);
-        createBtn.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        createBtn.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(createBtn);
+      headerPanel = new aurelienribon.ui.components.PaintedPanel();
+      jToolBar1 = new javax.swing.JToolBar();
+      createBtn = new javax.swing.JButton();
+      renameBtn = new javax.swing.JButton();
+      deleteBtn = new javax.swing.JButton();
+      upBtn = new javax.swing.JButton();
+      downBtn = new javax.swing.JButton();
+      jToolBar2 = new javax.swing.JToolBar();
+      repairBtn = new javax.swing.JButton();
+      jPanel1 = new javax.swing.JPanel();
+      jScrollPane1 = new javax.swing.JScrollPane();
+      list = new javax.swing.JList();
 
-        renameBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gfx/ic_edit.png"))); // NOI18N
-        renameBtn.setText("Rename");
-        renameBtn.setToolTipText("Change the name of the selected model");
-        renameBtn.setFocusable(false);
-        renameBtn.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        renameBtn.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(renameBtn);
+      setLayout(new java.awt.BorderLayout());
 
-        deleteBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gfx/ic_delete.png"))); // NOI18N
-        deleteBtn.setToolTipText("Delete the selected models");
-        deleteBtn.setFocusable(false);
-        deleteBtn.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        deleteBtn.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(deleteBtn);
+      jToolBar1.setFloatable(false);
+      jToolBar1.setRollover(true);
 
-        upBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gfx/ic_up.png"))); // NOI18N
-        upBtn.setToolTipText("Move the selected models up");
-        upBtn.setFocusable(false);
-        upBtn.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        upBtn.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(upBtn);
+      createBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gfx/ic_add.png"))); // NOI18N
+      createBtn.setText("New");
+      createBtn.setToolTipText("Create a new model");
+      createBtn.setFocusable(false);
+      createBtn.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+      createBtn.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+      jToolBar1.add(createBtn);
 
-        downBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gfx/ic_down.png"))); // NOI18N
-        downBtn.setToolTipText("Move the selected models down");
-        downBtn.setFocusable(false);
-        downBtn.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        downBtn.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(downBtn);
+      renameBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gfx/ic_edit.png"))); // NOI18N
+      renameBtn.setText("Rename");
+      renameBtn.setToolTipText("Change the name of the selected model");
+      renameBtn.setFocusable(false);
+      renameBtn.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+      renameBtn.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+      jToolBar1.add(renameBtn);
 
-        jToolBar2.setFloatable(false);
-        jToolBar2.setRollover(true);
+      deleteBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gfx/ic_delete.png"))); // NOI18N
+      deleteBtn.setToolTipText("Delete the selected models");
+      deleteBtn.setFocusable(false);
+      deleteBtn.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+      deleteBtn.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+      jToolBar1.add(deleteBtn);
 
-        repairBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gfx/ic_wrench.png"))); // NOI18N
-        repairBtn.setToolTipText("Repair all image paths");
-        repairBtn.setFocusable(false);
-        repairBtn.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        repairBtn.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar2.add(repairBtn);
+      upBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gfx/ic_up.png"))); // NOI18N
+      upBtn.setToolTipText("Move the selected models up");
+      upBtn.setFocusable(false);
+      upBtn.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+      upBtn.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+      jToolBar1.add(upBtn);
 
-        javax.swing.GroupLayout headerPanelLayout = new javax.swing.GroupLayout(headerPanel);
-        headerPanel.setLayout(headerPanelLayout);
-        headerPanelLayout.setHorizontalGroup(
-            headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+      downBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gfx/ic_down.png"))); // NOI18N
+      downBtn.setToolTipText("Move the selected models down");
+      downBtn.setFocusable(false);
+      downBtn.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+      downBtn.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+      jToolBar1.add(downBtn);
+
+      jToolBar2.setFloatable(false);
+      jToolBar2.setRollover(true);
+
+      repairBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gfx/ic_wrench.png"))); // NOI18N
+      repairBtn.setToolTipText("Repair all image paths");
+      repairBtn.setFocusable(false);
+      repairBtn.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+      repairBtn.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+      jToolBar2.add(repairBtn);
+
+      javax.swing.GroupLayout headerPanelLayout = new javax.swing.GroupLayout(headerPanel);
+      headerPanel.setLayout(headerPanelLayout);
+      headerPanelLayout.setHorizontalGroup(
+         headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(headerPanelLayout.createSequentialGroup()
-                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 192, Short.MAX_VALUE)
-                .addComponent(jToolBar2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
-        headerPanelLayout.setVerticalGroup(
-            headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+               .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+               .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 192, Short.MAX_VALUE)
+               .addComponent(jToolBar2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+      );
+      headerPanelLayout.setVerticalGroup(
+         headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(headerPanelLayout.createSequentialGroup()
-                .addComponent(jToolBar2, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-        );
+               .addComponent(jToolBar2, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+               .addGap(0, 0, Short.MAX_VALUE))
+      );
 
-        add(headerPanel, java.awt.BorderLayout.NORTH);
+      add(headerPanel, java.awt.BorderLayout.NORTH);
 
-        jPanel1.setOpaque(false);
+      jPanel1.setOpaque(false);
 
-        list.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
-        jScrollPane1.setViewportView(list);
+      list.setModel(new javax.swing.AbstractListModel() {
+         String[] strings = {"Item 1", "Item 2", "Item 3", "Item 4", "Item 5"};
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+         public int getSize() {
+            return strings.length;
+         }
+
+         public Object getElementAt(int i) {
+            return strings[i];
+         }
+      });
+      jScrollPane1.setViewportView(list);
+
+      javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+      jPanel1.setLayout(jPanel1Layout);
+      jPanel1Layout.setHorizontalGroup(
+         jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+      );
+      jPanel1Layout.setVerticalGroup(
+         jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 275, Short.MAX_VALUE)
-        );
+      );
 
-        add(jPanel1, java.awt.BorderLayout.CENTER);
-    }// </editor-fold>//GEN-END:initComponents
+      add(jPanel1, java.awt.BorderLayout.CENTER);
+   }// </editor-fold>//GEN-END:initComponents
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton createBtn;
-    private javax.swing.JButton deleteBtn;
-    private javax.swing.JButton downBtn;
-    private aurelienribon.ui.components.PaintedPanel headerPanel;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JToolBar jToolBar1;
-    private javax.swing.JToolBar jToolBar2;
-    private javax.swing.JList list;
-    private javax.swing.JButton renameBtn;
-    private javax.swing.JButton repairBtn;
-    private javax.swing.JButton upBtn;
-    // End of variables declaration//GEN-END:variables
+   // Variables declaration - do not modify//GEN-BEGIN:variables
+   private javax.swing.JButton createBtn;
+   private javax.swing.JButton deleteBtn;
+   private javax.swing.JButton downBtn;
+   private aurelienribon.ui.components.PaintedPanel headerPanel;
+   private javax.swing.JPanel jPanel1;
+   private javax.swing.JScrollPane jScrollPane1;
+   private javax.swing.JToolBar jToolBar1;
+   private javax.swing.JToolBar jToolBar2;
+   private javax.swing.JList list;
+   private javax.swing.JButton renameBtn;
+   private javax.swing.JButton repairBtn;
+   private javax.swing.JButton upBtn;
+   // End of variables declaration//GEN-END:variables
 }

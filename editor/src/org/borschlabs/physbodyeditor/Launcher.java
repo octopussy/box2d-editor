@@ -1,7 +1,9 @@
 package org.borschlabs.physbodyeditor;
 
 import com.google.inject.Guice;
+import com.google.inject.Inject;
 import com.google.inject.Injector;
+import com.google.inject.Singleton;
 import org.borschlabs.physbodyeditor.ui.EditorWindow;
 import org.borschlabs.physbodyeditor.ui.GdxRenderWindow;
 
@@ -23,29 +25,32 @@ public class Launcher {
          public void run() {
             Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
-            EditorWindow window = injector.getInstance(EditorWindow.class);
-            GdxRenderWindow renderWindow = injector.getInstance(GdxRenderWindow.class);
+            Injection injection = injector.getInstance(Injection.class);
+            injection.editorWindow.pack();
 
-            window.pack();
+            injection.editorWindow.setVisible(true);
+            injection.editorWindow.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+            injection.editorWindow.setSize(DEFAULT_EDITOR_WIDTH - MARGIN * 2, screenSize.height  - MARGIN * 2/*DEFAULT_EDITOR_HEIGHT*/);
+            injection.editorWindow.setLocation(MARGIN, MARGIN);
 
-            window.setVisible(true);
-            window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-            window.setSize(DEFAULT_EDITOR_WIDTH - MARGIN * 2, screenSize.height  - MARGIN * 2/*DEFAULT_EDITOR_HEIGHT*/);
-            window.setLocation(MARGIN, MARGIN);
-
-            renderWindow.pack();
-            renderWindow.setVisible(true);
-            renderWindow.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-            renderWindow.setSize(screenSize.width - DEFAULT_EDITOR_WIDTH - MARGIN * 2, screenSize.height - MARGIN * 2);
-            renderWindow.setLocation(MARGIN + DEFAULT_EDITOR_WIDTH, MARGIN);
+            injection.renderWindow.pack();
+            injection.renderWindow.setVisible(true);
+            injection.renderWindow.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+            injection.renderWindow.setSize(screenSize.width - DEFAULT_EDITOR_WIDTH - MARGIN * 2, screenSize.height - MARGIN * 2);
+            injection.renderWindow.setLocation(MARGIN + DEFAULT_EDITOR_WIDTH, MARGIN);
          }
       });
+   }
 
-      EventQueue.invokeLater(new Runnable() {
-         @Override
-         public void run() {
+   @Singleton
+   private static class Injection {
+      final EditorWindow editorWindow;
+      final GdxRenderWindow renderWindow;
 
-         }
-      });
+      @Inject
+      private Injection(EditorWindow editorWindow, GdxRenderWindow renderWindow) {
+         this.editorWindow = editorWindow;
+         this.renderWindow = renderWindow;
+      }
    }
 }

@@ -37,6 +37,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.utils.Array;
+import org.borschlabs.physbodyeditor.ui.EditorWindow;
 
 import javax.swing.*;
 import java.io.File;
@@ -47,6 +48,7 @@ import java.util.*;
  */
 public class RigidBodiesScreen {
 	private final Canvas canvas;
+	private final EditorWindow editorWindow;
 	private final RigidBodiesScreenDrawer drawer;
 	private final Box2DDebugRenderer debugRdr = new Box2DDebugRenderer();
 	private final TweenManager tweenManager = new TweenManager();
@@ -83,8 +85,9 @@ public class RigidBodiesScreen {
 	public Vector2 ballThrowP1;
 	public Vector2 ballThrowP2;
 
-	public RigidBodiesScreen(Canvas canvas) {
+	public RigidBodiesScreen(Canvas canvas, EditorWindow editorWindow) {
 		this.canvas = canvas;
+		this.editorWindow = editorWindow;
 		this.drawer = new RigidBodiesScreenDrawer(canvas.worldCamera);
 
 		creationInputProcessor = new CreationInputProcessor(canvas, this);
@@ -259,7 +262,7 @@ public class RigidBodiesScreen {
 					JFileChooser chooser = new JFileChooser(Ctx.io.getProjectDir());
 					chooser.setDialogTitle("Select the background image for the selected model");
 
-					if (chooser.showOpenDialog(Ctx.window) == JFileChooser.APPROVE_OPTION) {
+					if (chooser.showOpenDialog(editorWindow) == JFileChooser.APPROVE_OPTION) {
 						String path = Ctx.io.buildImagePath(chooser.getSelectedFile());
 						Ctx.bodies.getSelectedModel().setImagePath(path);
 					}
@@ -285,8 +288,8 @@ public class RigidBodiesScreen {
 			@Override public void touchExit(Label source) {}
 			@Override public void touchDown(Label source) {
 				SwingUtilities.invokeLater(new Runnable() {@Override public void run() {
-					AutoTraceParamsDialog dialog = new AutoTraceParamsDialog(Ctx.window);
-					dialog.setLocationRelativeTo(Ctx.window);
+					AutoTraceParamsDialog dialog = new AutoTraceParamsDialog(editorWindow);
+					dialog.setLocationRelativeTo(editorWindow);
 					if (dialog.prompt()) autoTrace();
 				}});
 			}

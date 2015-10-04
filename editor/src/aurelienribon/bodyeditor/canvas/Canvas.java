@@ -20,6 +20,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.google.inject.Inject;
+import org.borschlabs.physbodyeditor.ui.EditorWindow;
 
 import java.util.List;
 import java.util.Locale;
@@ -29,6 +31,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @author Aurelien Ribon | http://www.aurelienribon.com/
  */
 public class Canvas extends ApplicationAdapter {
+	private final EditorWindow editorWindow;
 	public OrthographicCamera worldCamera;
 	public OrthographicCamera screenCamera;
 	public SpriteBatch batch;
@@ -44,6 +47,11 @@ public class Canvas extends ApplicationAdapter {
 
 	private Sprite infoLabel;
 	private Texture backgroundTexture;
+
+	@Inject
+	public Canvas(EditorWindow editorWindow) {
+		this.editorWindow = editorWindow;
+	}
 
 	@Override
 	public void create() {
@@ -70,8 +78,8 @@ public class Canvas extends ApplicationAdapter {
 		input.addProcessor(new PanZoomInputProcessor(this));
 		Gdx.input.setInputProcessor(input);
 
-		rigidBodiesScreen = new RigidBodiesScreen(this);
-		dynamicObjectsScreen = new DynamicObjectsScreen(this);
+		rigidBodiesScreen = new RigidBodiesScreen(this, editorWindow);
+		dynamicObjectsScreen = new DynamicObjectsScreen(this, editorWindow);
 
 		initializeSelectionListeners();
 	}

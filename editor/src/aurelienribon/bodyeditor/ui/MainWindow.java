@@ -1,7 +1,6 @@
 package aurelienribon.bodyeditor.ui;
 
 import aurelienribon.bodyeditor.Ctx;
-import aurelienribon.ui.components.TabPanel;
 import aurelienribon.ui.css.Style;
 import aurelienribon.utils.Res;
 import aurelienribon.utils.io.HttpUtils;
@@ -37,9 +36,9 @@ public class MainWindow extends javax.swing.JFrame {
 		Style.registerCssClasses(versionLabel, ".versionLabel");
 		Style.apply(getContentPane(), new Style(Res.getUrl("/css/style.css")));
 */
-		objectsPanel.getModel().add(new RigidBodiesPanel(), "Rigid bodies", null, false);
+		/*objectsPanel.getModel().add(new RigidBodiesPanel(), "Rigid bodies", null, false);
 		objectsPanel.getModel().add(new DynamicObjectsPanel(), "Dynamic objects", null, false);
-		objectsPanel.setHeaderLayout(TabPanel.LAYOUT_GRID);
+		objectsPanel.setHeaderLayout(TabPanel.LAYOUT_GRID);*/
 
 		logoWebsiteLbl.addMouseListener(new MouseAdapter() {
 			@Override public void mouseClicked(MouseEvent e) {
@@ -142,7 +141,7 @@ public class MainWindow extends javax.swing.JFrame {
         jLabel10 = new javax.swing.JLabel();
         logoWebsiteLbl = new javax.swing.JLabel();
         logoManualLbl = new javax.swing.JLabel();
-        projectPanel = new aurelienribon.bodyeditor.ui.ProjectPanel();
+        projectPanel = new aurelienribon.bodyeditor.ui.ProjectPanel(null);
         jPanel1 = new javax.swing.JPanel();
         objectsPanel = new aurelienribon.ui.components.TabPanel();
         versionPanel = new javax.swing.JPanel();

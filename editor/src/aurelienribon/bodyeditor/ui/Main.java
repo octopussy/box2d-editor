@@ -1,13 +1,10 @@
 package aurelienribon.bodyeditor.ui;
 
 import aurelienribon.bodyeditor.Ctx;
-import aurelienribon.bodyeditor.canvas.Canvas;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.badlogic.gdx.backends.lwjgl.LwjglCanvas;
 import org.json.JSONException;
 
 import javax.swing.*;
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
@@ -32,6 +29,7 @@ public class Main {
 				configuration.fullscreen = false;
 				configuration.useGL30 = false;
 
+/*
 				LwjglCanvas glCanvas = new LwjglCanvas(new Canvas(), configuration);
 				MainWindow mw = Ctx.window;
 
@@ -44,6 +42,7 @@ public class Main {
 				mw.setCanvas(glCanvas.getCanvas());
 				mw.setLocationRelativeTo(null);
 				mw.setVisible(true);
+*/
 
 				parseArgs(args);
 			}

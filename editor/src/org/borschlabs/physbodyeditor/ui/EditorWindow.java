@@ -1,6 +1,7 @@
 package org.borschlabs.physbodyeditor.ui;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import org.borschlabs.physbodyeditor.Log;
 
 import javax.swing.*;
@@ -8,6 +9,7 @@ import javax.swing.*;
 /**
  * @author octopussy
  */
+@Singleton
 public class EditorWindow extends JFrame {
    private JPanel rootPanel;
 
