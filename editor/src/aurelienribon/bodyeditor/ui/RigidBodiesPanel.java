@@ -9,8 +9,6 @@ import aurelienribon.utils.Res;
 import aurelienribon.utils.notifications.AutoListModel;
 import aurelienribon.utils.notifications.ChangeListener;
 import aurelienribon.utils.notifications.ObservableList;
-import com.google.inject.Inject;
-import org.borschlabs.physbodyeditor.Log;
 import org.borschlabs.physbodyeditor.ui.EditorWindow;
 
 import javax.swing.*;
@@ -29,12 +27,9 @@ import java.util.List;
  */
 public class RigidBodiesPanel extends javax.swing.JPanel {
 
-   private final Log log;
    private final EditorWindow editorWindow;
 
-   @Inject
-   public RigidBodiesPanel(Log log, EditorWindow editorWindow) {
-      this.log = log;
+   public RigidBodiesPanel(EditorWindow editorWindow) {
       this.editorWindow = editorWindow;
 
       initComponents();

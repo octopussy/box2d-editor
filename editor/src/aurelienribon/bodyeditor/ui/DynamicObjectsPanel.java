@@ -7,7 +7,6 @@ import aurelienribon.ui.components.ImagePreviewPanel;
 import aurelienribon.ui.css.Style;
 import aurelienribon.utils.notifications.AutoListModel;
 import aurelienribon.utils.notifications.ChangeListener;
-import org.borschlabs.physbodyeditor.Log;
 import org.borschlabs.physbodyeditor.ui.EditorWindow;
 
 import javax.swing.*;
@@ -24,11 +23,9 @@ import java.util.List;
  * @author Aurelien Ribon | http://www.aurelienribon.com/
  */
 public class DynamicObjectsPanel extends javax.swing.JPanel {
-   private final Log log;
    private final EditorWindow editorWindow;
 
-   public DynamicObjectsPanel(Log log, EditorWindow editorWindow) {
-      this.log = log;
+   public DynamicObjectsPanel(EditorWindow editorWindow) {
       this.editorWindow = editorWindow;
       initComponents();
 

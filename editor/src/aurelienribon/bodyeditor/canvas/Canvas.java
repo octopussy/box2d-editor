@@ -20,7 +20,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.google.inject.Inject;
 import org.borschlabs.physbodyeditor.ui.EditorWindow;
 
 import java.util.List;
@@ -48,7 +47,6 @@ public class Canvas extends ApplicationAdapter {
 	private Sprite infoLabel;
 	private Texture backgroundTexture;
 
-	@Inject
 	public Canvas(EditorWindow editorWindow) {
 		this.editorWindow = editorWindow;
 	}
