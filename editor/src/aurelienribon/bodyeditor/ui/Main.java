@@ -2,15 +2,14 @@ package aurelienribon.bodyeditor.ui;
 
 import aurelienribon.bodyeditor.Ctx;
 import aurelienribon.bodyeditor.canvas.Canvas;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl.LwjglCanvas;
-import java.awt.Dimension;
-import java.awt.Toolkit;
+import org.json.JSONException;
+
+import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-import org.json.JSONException;
 
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/
@@ -27,7 +26,13 @@ public class Main {
 				} catch (UnsupportedLookAndFeelException ex) {
 				}
 
-				LwjglCanvas glCanvas = new LwjglCanvas(new Canvas(), false);
+				LwjglApplicationConfiguration configuration = new LwjglApplicationConfiguration();
+				configuration.width = 800;
+				configuration.height = 600;
+				configuration.fullscreen = false;
+				configuration.useGL30 = true;
+
+				LwjglCanvas glCanvas = new LwjglCanvas(new Canvas(), configuration);
 				MainWindow mw = Ctx.window;
 
 				Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();

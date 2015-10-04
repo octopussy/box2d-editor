@@ -2,7 +2,7 @@ package aurelienribon.bodyeditor.canvas.rigidbodies;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -27,9 +27,9 @@ public class RigidBodiesScreenDrawer {
 	public void drawBallThrowPath(Vector2 p1, Vector2 p2) {
 		if (p1 == null || p2 == null) return;
 
-		Gdx.gl10.glLineWidth(3);
-		Gdx.gl10.glEnable(GL10.GL_BLEND);
-		Gdx.gl10.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		Gdx.gl20.glLineWidth(3);
+		Gdx.gl20.glEnable(GL20.GL_BLEND);
+		Gdx.gl20.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
 		float w = 0.03f * camera.zoom;
 
@@ -40,9 +40,9 @@ public class RigidBodiesScreenDrawer {
 		drawer.end();
 
 		drawer.setProjectionMatrix(camera.combined);
-		drawer.begin(ShapeRenderer.ShapeType.FilledRectangle);
+		drawer.begin(ShapeRenderer.ShapeType.Filled);
 		drawer.setColor(BALLTHROWPATH_COLOR);
-		drawer.filledRect(p2.cpy().sub(w/2, w/2).x, p2.cpy().sub(w/2, w/2).y, w, w);
+		drawer.rect(p2.cpy().sub(w/2, w/2).x, p2.cpy().sub(w/2, w/2).y, w, w);
 		drawer.end();
 	}
 }

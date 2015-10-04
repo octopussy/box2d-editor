@@ -22,7 +22,7 @@
 	</target>
 
 	<target name="jar" depends="compile">
-		<copy todir="bin/res/"><fileset dir="src/res/" excludes="**/*.java"/></copy>
+		<copy todir="bin/res/"><fileset dir="res/" excludes="**/*.java"/></copy>
 		
 		<pathconvert property="classpath" pathsep=" ">
 			<path><fileset dir="." includes="libs/**/*.jar" /></path>

@@ -42,7 +42,7 @@ public class DynamicObjectsScreen {
 
 	private final InputProcessor bodiesListInputProcessor = new InputAdapter() {
 		@Override
-		public boolean touchMoved(int x, int y) {
+		public boolean mouseMoved(int x, int y) {
 			bodiesList.touchMoved(x, y);
 			return false;
 		}

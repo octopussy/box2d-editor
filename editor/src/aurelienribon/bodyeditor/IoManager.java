@@ -3,10 +3,11 @@ package aurelienribon.bodyeditor;
 import aurelienribon.bodyeditor.io.JsonIo;
 import aurelienribon.utils.io.FilenameHelper;
 import aurelienribon.utils.notifications.ChangeableObject;
-import java.io.File;
-import java.io.IOException;
 import org.apache.commons.io.FileUtils;
 import org.json.JSONException;
+
+import java.io.File;
+import java.io.IOException;
 
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/

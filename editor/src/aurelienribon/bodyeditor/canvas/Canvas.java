@@ -12,7 +12,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -20,6 +20,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -57,10 +58,10 @@ public class Canvas extends ApplicationAdapter {
 		font = new BitmapFont();
 		drawer = new CanvasDrawer(batch, worldCamera);
 
-		backgroundTexture = Assets.inst().get("res/data/transparent-light.png", Texture.class);
+		backgroundTexture = Assets.inst().get("/data/transparent-light.png", Texture.class);
 		backgroundTexture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
-		infoLabel = new Sprite(Assets.inst().get("res/data/white.png", Texture.class));
+		infoLabel = new Sprite(Assets.inst().get("/data/white.png", Texture.class));
 		infoLabel.setPosition(0, 0);
 		infoLabel.setSize(120, 60);
 		infoLabel.setColor(new Color(0x2A/255f, 0x3B/255f, 0x56/255f, 180/255f));
@@ -114,9 +115,9 @@ public class Canvas extends ApplicationAdapter {
 		float w = Gdx.graphics.getWidth();
 		float h = Gdx.graphics.getHeight();
 
-		GL10 gl = Gdx.gl10;
+		GL20 gl = Gdx.gl20;
 		gl.glClearColor(1, 1, 1, 1);
-		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		batch.setProjectionMatrix(screenCamera.combined);
 		batch.begin();
@@ -141,7 +142,7 @@ public class Canvas extends ApplicationAdapter {
 
 	@Override
 	public void resize(int width, int height) {
-		GL10 gl = Gdx.gl10;
+		GL20 gl = Gdx.gl20;
 		gl.glViewport(0, 0, width, height);
 		resetCameras();
 	}

@@ -34,22 +34,13 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
+
+import javax.swing.*;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
-import javax.swing.JFileChooser;
-import javax.swing.SwingUtilities;
+import java.util.*;
 
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/
@@ -167,7 +158,7 @@ public class RigidBodiesScreen {
 		}
 
 		@Override
-		public boolean touchMoved(int x, int y) {
+		public boolean mouseMoved(int x, int y) {
 			for (Label label : labels) label.touchMoved(x, y);
 			return false;
 		}
@@ -572,8 +563,12 @@ public class RigidBodiesScreen {
 	private void clearWorld() {
 		ballsBodies.clear();
 		ballsSprites.clear();
-		Iterator<Body> bodies = world.getBodies();
-		while (bodies.hasNext()) world.destroyBody(bodies.next());
+		Array<Body> bodies = new Array<Body>();
+		world.getBodies(bodies);
+		Iterator<Body> iter = bodies.iterator();
+		while (iter.hasNext()) {
+			world.destroyBody(iter.next());
+		}
 	}
 
 	private void createBody() {
@@ -649,7 +644,7 @@ public class RigidBodiesScreen {
 		bd.angle = rand.nextFloat() * MathUtils.PI;
 
 		Body b = world.createBody(bd);
-		b.applyLinearImpulse(force, orig);
+		b.applyLinearImpulse(force, orig, true);
 
 		ballsBodies.add(b);
 
@@ -664,7 +659,7 @@ public class RigidBodiesScreen {
 
 		b.createFixture(fd);
 
-		Sprite sp = new Sprite(Assets.inst().get("res/data/ball.png", Texture.class));
+		Sprite sp = new Sprite(Assets.inst().get("/data/ball.png", Texture.class));
 		sp.setSize(radius*2, radius*2);
 		sp.setOrigin(sp.getWidth()/2, sp.getHeight()/2);
 		ballsSprites.add(sp);

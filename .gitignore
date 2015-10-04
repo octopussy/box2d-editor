@@ -1,0 +1,86 @@
+syntax: glob
+
+## Java
+
+*.class
+*.war
+*.ear
+hs_err_pid*
+
+
+## Android Studio and Intellij and Android in general
+android/libs/armeabi/
+android/libs/armeabi-v7a/
+android/libs/x86/
+android/gen/
+.idea/
+*.ipr
+*.iws
+*.iml
+out/
+com_crashlytics_export_strings.xml
+
+## Eclipse
+.classpath
+.project
+.metadata
+**/bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+.externalToolBuilders/
+*.launch
+
+## NetBeans
+**/nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+nbactions.xml
+nb-configuration.xml
+
+## Gradle
+
+.gradle
+gradle-app.setting
+
+## OS Specific
+.DS_Store
+
+*.zip
+
+editor/manifest.mf
+editor/nbbuild.xml
+editor/build/*
+editor/dist/*
+editor/nbproject/*
+editor/bin/*
+editor/.classpath
+editor/.project
+editor/*.jar
+
+loader-libgdx/manifest.mf
+loader-libgdx/nbbuild.xml
+loader-libgdx/build/*
+loader-libgdx/dist/*
+loader-libgdx/nbproject/*
+loader-libgdx/bin/*
+loader-libgdx/.classpath
+loader-libgdx/.project
+loader-libgdx/*.jar
+
+loader-libgdx-demo/manifest.mf
+loader-libgdx-demo/nbbuild.xml
+loader-libgdx-demo/build/*
+loader-libgdx-demo/dist/*
+loader-libgdx-demo/nbproject/*
+loader-libgdx-demo/bin/*
+loader-libgdx-demo/.classpath
+loader-libgdx-demo/.project
+loader-libgdx-demo/*.jar

@@ -1,10 +1,10 @@
-package res;
+package aurelienribon.utils;
 
+import javax.swing.*;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import javax.swing.ImageIcon;
 
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/

@@ -7,7 +7,7 @@ import aurelienribon.bodyeditor.models.RigidBodyModel;
 import aurelienribon.bodyeditor.models.ShapeModel;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -42,9 +42,9 @@ public class CanvasDrawer {
 		this.batch = batch;
 		this.camera = camera;
 
-		v00Sprite = new Sprite(Assets.inst().get("res/data/v00.png", Texture.class));
-		v10Sprite = new Sprite(Assets.inst().get("res/data/v10.png", Texture.class));
-		v01Sprite = new Sprite(Assets.inst().get("res/data/v01.png", Texture.class));
+		v00Sprite = new Sprite(Assets.inst().get("/data/v00.png", Texture.class));
+		v10Sprite = new Sprite(Assets.inst().get("/data/v10.png", Texture.class));
+		v01Sprite = new Sprite(Assets.inst().get("/data/v01.png", Texture.class));
 		v00Sprite.getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 		v10Sprite.getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 		v01Sprite.getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
@@ -124,20 +124,20 @@ public class CanvasDrawer {
 	// -------------------------------------------------------------------------
 
 	private void drawBoundingBox(float w, float h) {
-		Gdx.gl10.glLineWidth(1);
-		Gdx.gl10.glEnable(GL10.GL_BLEND);
-		Gdx.gl10.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		Gdx.gl20.glLineWidth(1);
+		Gdx.gl20.glEnable(GL20.GL_BLEND);
+		Gdx.gl20.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
-		drawer.begin(ShapeRenderer.ShapeType.Rectangle);
+		drawer.begin(ShapeRenderer.ShapeType.Filled);
 		drawer.setColor(AXIS_COLOR);
 		drawer.rect(0, 0, w, h);
 		drawer.end();
 	}
 
 	private void drawAxisImpl() {
-		Gdx.gl10.glLineWidth(3);
-		Gdx.gl10.glEnable(GL10.GL_BLEND);
-		Gdx.gl10.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		Gdx.gl20.glLineWidth(3);
+		Gdx.gl20.glEnable(GL20.GL_BLEND);
+		Gdx.gl20.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
 		float len = 0.03f * camera.zoom;
 
@@ -168,9 +168,9 @@ public class CanvasDrawer {
 	}
 
 	private void drawGrid(float gap) {
-		Gdx.gl10.glLineWidth(1);
-		Gdx.gl10.glEnable(GL10.GL_BLEND);
-		Gdx.gl10.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		Gdx.gl20.glLineWidth(1);
+		Gdx.gl20.glEnable(GL20.GL_BLEND);
+		Gdx.gl20.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
 		if (gap <= 0) gap = 0.001f;
 		float x = camera.position.x;
@@ -189,9 +189,9 @@ public class CanvasDrawer {
 	}
 
 	private void drawShapes(List<ShapeModel> shapes, Vector2 nextPoint) {
-		Gdx.gl10.glLineWidth(2);
-		Gdx.gl10.glEnable(GL10.GL_BLEND);
-		Gdx.gl10.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		Gdx.gl20.glLineWidth(2);
+		Gdx.gl20.glEnable(GL20.GL_BLEND);
+		Gdx.gl20.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
 		for (ShapeModel shape : shapes) {
 			List<Vector2> vs = shape.getVertices();
@@ -218,18 +218,18 @@ public class CanvasDrawer {
 				case CIRCLE:
 					if (shape.isClosed()) {
 						Vector2 center = shape.getVertices().get(0);
-						float radius = shape.getVertices().get(1).tmp().sub(center).len();
+						float radius = shape.getVertices().get(1).cpy().sub(center).len();
 						if (radius > 0.0001f) {
-							drawer.begin(ShapeRenderer.ShapeType.Circle);
+							drawer.begin(ShapeRenderer.ShapeType.Line);
 							drawer.setColor(SHAPE_COLOR);
 							drawer.circle(center.x, center.y, radius, 20);
 							drawer.end();
 						}
 					} else {
 						Vector2 center = shape.getVertices().get(0);
-						float radius = nextPoint.tmp().sub(center).len();
+						float radius = nextPoint.cpy().sub(center).len();
 						if (radius > 0.0001f) {
-							drawer.begin(ShapeRenderer.ShapeType.Circle);
+							drawer.begin(ShapeRenderer.ShapeType.Line);
 							drawer.setColor(SHAPE_LASTLINE_COLOR);
 							drawer.circle(center.x, center.y, radius, 20);
 							drawer.end();
@@ -241,21 +241,21 @@ public class CanvasDrawer {
 	}
 
 	private void drawPoints(List<ShapeModel> shapes, List<Vector2> selectedPoints, Vector2 nearestPoint, Vector2 nextPoint) {
-		Gdx.gl10.glLineWidth(2);
-		Gdx.gl10.glEnable(GL10.GL_BLEND);
-		Gdx.gl10.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		Gdx.gl20.glLineWidth(2);
+		Gdx.gl20.glEnable(GL20.GL_BLEND);
+		Gdx.gl20.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
 		float w = 0.025f * camera.zoom;
 
 		for (ShapeModel shape : shapes) {
 			for (Vector2 p : shape.getVertices()) {
 				if (p == nearestPoint || (selectedPoints != null && selectedPoints.contains(p))) {
-					drawer.begin(ShapeRenderer.ShapeType.FilledRectangle);
+					drawer.begin(ShapeRenderer.ShapeType.Filled);
 					drawer.setColor(SHAPE_COLOR);
-					drawer.filledRect(p.cpy().sub(w/2, w/2).x, p.cpy().sub(w/2, w/2).y, w, w);
+					drawer.rect(p.cpy().sub(w/2, w/2).x, p.cpy().sub(w/2, w/2).y, w, w);
 					drawer.end();
 				} else {
-					drawer.begin(ShapeRenderer.ShapeType.Rectangle);
+					drawer.begin(ShapeRenderer.ShapeType.Line);
 					drawer.setColor(SHAPE_COLOR);
 					drawer.rect(p.cpy().sub(w/2, w/2).x, p.cpy().sub(w/2, w/2).y, w, w);
 					drawer.end();
@@ -264,7 +264,7 @@ public class CanvasDrawer {
 		}
 
 		if (nextPoint != null) {
-			drawer.begin(ShapeRenderer.ShapeType.Rectangle);
+			drawer.begin(ShapeRenderer.ShapeType.Line);
 			drawer.setColor(SHAPE_LASTLINE_COLOR);
 			drawer.rect(nextPoint.cpy().sub(w/2, w/2).x, nextPoint.cpy().sub(w/2, w/2).y, w, w);
 			drawer.end();
@@ -272,9 +272,9 @@ public class CanvasDrawer {
 	}
 
 	private void drawPolygons(List<PolygonModel> polygons) {
-		Gdx.gl10.glLineWidth(2);
-		Gdx.gl10.glEnable(GL10.GL_BLEND);
-		Gdx.gl10.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		Gdx.gl20.glLineWidth(2);
+		Gdx.gl20.glEnable(GL20.GL_BLEND);
+		Gdx.gl20.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
 		drawer.begin(ShapeRenderer.ShapeType.Line);
 		drawer.setColor(POLYGON_COLOR);
@@ -289,9 +289,9 @@ public class CanvasDrawer {
 	}
 
 	private void drawOrigin(Vector2 o, Vector2 nearestPoint) {
-		Gdx.gl10.glLineWidth(2);
-		Gdx.gl10.glEnable(GL10.GL_BLEND);
-		Gdx.gl10.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		Gdx.gl20.glLineWidth(2);
+		Gdx.gl20.glEnable(GL20.GL_BLEND);
+		Gdx.gl20.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
 		float len = 0.03f * camera.zoom;
 		float radius = 0.02f * camera.zoom;
@@ -303,34 +303,34 @@ public class CanvasDrawer {
 		drawer.end();
 
 		if (nearestPoint != o) {
-			drawer.begin(ShapeRenderer.ShapeType.Circle);
+			drawer.begin(ShapeRenderer.ShapeType.Line);
 			drawer.setColor(ORIGIN_COLOR);
 			drawer.circle(o.x, o.y, radius, 20);
 			drawer.end();
 		} else {
-			drawer.begin(ShapeRenderer.ShapeType.FilledCircle);
+			drawer.begin(ShapeRenderer.ShapeType.Filled);
 			drawer.setColor(ORIGIN_COLOR);
-			drawer.filledCircle(o.x, o.y, radius, 20);
+			drawer.circle(o.x, o.y, radius, 20);
 			drawer.end();
 		}
 	}
 
 	private void drawMouseSelection(float x1, float y1, float x2, float y2) {
-		Gdx.gl10.glLineWidth(3);
-		Gdx.gl10.glEnable(GL10.GL_BLEND);
-		Gdx.gl10.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		Gdx.gl20.glLineWidth(3);
+		Gdx.gl20.glEnable(GL20.GL_BLEND);
+		Gdx.gl20.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
 		Rectangle rect = new Rectangle(
 			Math.min(x1, x2), Math.min(y1, y2),
 			Math.abs(x2 - x1), Math.abs(y2 - y1)
 		);
 
-		drawer.begin(ShapeRenderer.ShapeType.FilledRectangle);
+		drawer.begin(ShapeRenderer.ShapeType.Filled);
 		drawer.setColor(MOUSESELECTION_FILL_COLOR);
-		drawer.filledRect(rect.x, rect.y, rect.width, rect.height);
+		drawer.rect(rect.x, rect.y, rect.width, rect.height);
 		drawer.end();
 
-		drawer.begin(ShapeRenderer.ShapeType.Rectangle);
+		drawer.begin(ShapeRenderer.ShapeType.Line);
 		drawer.setColor(MOUSESELECTION_STROKE_COLOR);
 		drawer.rect(rect.x, rect.y, rect.width, rect.height);
 		drawer.end();

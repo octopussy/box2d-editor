@@ -4,23 +4,13 @@ import aurelienribon.bodyeditor.Ctx;
 import aurelienribon.bodyeditor.models.RigidBodyModel;
 import aurelienribon.ui.components.PaintedPanel;
 import aurelienribon.ui.css.Style;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.io.File;
-import javax.swing.JFileChooser;
-import javax.swing.JTextField;
-import javax.swing.filechooser.FileNameExtensionFilter;
+import aurelienribon.utils.Res;
 import net.java.balloontip.BalloonTip;
-import res.Res;
+
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.event.*;
+import java.io.File;
 
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/
@@ -195,7 +185,7 @@ public class RigidBodiesCreationDialog extends javax.swing.JDialog {
         setTitle("New rigid body");
         setResizable(false);
 
-        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/gfx/newBody.png"))); // NOI18N
+        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gfx/newBody.png"))); // NOI18N
         getContentPane().add(jLabel4, java.awt.BorderLayout.WEST);
 
         jPanel1.setOpaque(false);

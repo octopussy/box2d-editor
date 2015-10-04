@@ -5,33 +5,21 @@ import aurelienribon.bodyeditor.DynamicObjectsManager;
 import aurelienribon.bodyeditor.models.RigidBodyModel;
 import aurelienribon.ui.components.ImagePreviewPanel;
 import aurelienribon.ui.css.Style;
+import aurelienribon.utils.Res;
 import aurelienribon.utils.notifications.AutoListModel;
 import aurelienribon.utils.notifications.ChangeListener;
 import aurelienribon.utils.notifications.ObservableList;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.swing.BorderFactory;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.ListCellRenderer;
+
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import res.Res;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.util.*;
+import java.util.List;
 
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/
@@ -319,7 +307,7 @@ public class RigidBodiesPanel extends javax.swing.JPanel {
         jToolBar1.setFloatable(false);
         jToolBar1.setRollover(true);
 
-        createBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/gfx/ic_add.png"))); // NOI18N
+        createBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gfx/ic_add.png"))); // NOI18N
         createBtn.setText("New");
         createBtn.setToolTipText("Create a new model");
         createBtn.setFocusable(false);
@@ -327,7 +315,7 @@ public class RigidBodiesPanel extends javax.swing.JPanel {
         createBtn.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar1.add(createBtn);
 
-        renameBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/gfx/ic_edit.png"))); // NOI18N
+        renameBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gfx/ic_edit.png"))); // NOI18N
         renameBtn.setText("Rename");
         renameBtn.setToolTipText("Change the name of the selected model");
         renameBtn.setFocusable(false);
@@ -335,21 +323,21 @@ public class RigidBodiesPanel extends javax.swing.JPanel {
         renameBtn.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar1.add(renameBtn);
 
-        deleteBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/gfx/ic_delete.png"))); // NOI18N
+        deleteBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gfx/ic_delete.png"))); // NOI18N
         deleteBtn.setToolTipText("Delete the selected models");
         deleteBtn.setFocusable(false);
         deleteBtn.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         deleteBtn.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar1.add(deleteBtn);
 
-        upBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/gfx/ic_up.png"))); // NOI18N
+        upBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gfx/ic_up.png"))); // NOI18N
         upBtn.setToolTipText("Move the selected models up");
         upBtn.setFocusable(false);
         upBtn.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         upBtn.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar1.add(upBtn);
 
-        downBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/gfx/ic_down.png"))); // NOI18N
+        downBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gfx/ic_down.png"))); // NOI18N
         downBtn.setToolTipText("Move the selected models down");
         downBtn.setFocusable(false);
         downBtn.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -359,7 +347,7 @@ public class RigidBodiesPanel extends javax.swing.JPanel {
         jToolBar2.setFloatable(false);
         jToolBar2.setRollover(true);
 
-        repairBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/gfx/ic_wrench.png"))); // NOI18N
+        repairBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gfx/ic_wrench.png"))); // NOI18N
         repairBtn.setToolTipText("Repair all image paths");
         repairBtn.setFocusable(false);
         repairBtn.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);

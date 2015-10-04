@@ -9,10 +9,7 @@ import aurelienribon.utils.gdx.SpriteUtils;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.*;
 
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/
@@ -26,7 +23,7 @@ public class BodiesListItem {
 	private final Color bgColor;
 
 	private final TweenManager tweenManager = new TweenManager();
-	private final Sprite background = new Sprite(Assets.inst().get("res/data/white.png", Texture.class));
+	private final Sprite background = new Sprite(Assets.inst().get("/data/white.png", Texture.class));
 	private final Sprite image;
 	private String text = "";
 	private boolean isTouchOver = false;
@@ -52,10 +49,13 @@ public class BodiesListItem {
 			image = null;
 		}
 
-		if (font.getBounds(text).width > w-p*2) {
+		GlyphLayout layout = new GlyphLayout();
+		layout.setText(font, text);
+
+		if (layout.width > w-p*2) {
 			for (int i=1; i<=model.getName().length(); i++) {
 				text = model.getName().substring(0, i) + "...";
-				if (font.getBounds(text).width > w-p*2) {
+				if (layout.width > w-p*2) {
 					text = model.getName().substring(0, i-1) + "...";
 					break;
 				}

@@ -4,11 +4,12 @@ import aurelienribon.bodyeditor.Ctx;
 import aurelienribon.bodyeditor.models.RigidBodyModel;
 import aurelienribon.ui.components.PaintedPanel;
 import aurelienribon.ui.css.Style;
+import aurelienribon.utils.Res;
+import org.apache.commons.io.FilenameUtils;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import org.apache.commons.io.FilenameUtils;
-import res.Res;
 
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/

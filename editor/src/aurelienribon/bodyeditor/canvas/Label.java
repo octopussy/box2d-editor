@@ -45,7 +45,7 @@ public class Label {
 		this.color = color;
 		this.anchor = anchor;
 
-		this.bg = new Sprite(Assets.inst().get("res/data/white.png", Texture.class));
+		this.bg = new Sprite(Assets.inst().get("/data/white.png", Texture.class));
 		bg.setSize(w*11/10, h);
 		bg.setColor(color);
 
@@ -139,7 +139,7 @@ public class Label {
 		float sh = Gdx.graphics.getHeight();
 		float x = isAnchorLeft() ? offsetX : sw-w-offsetX;
 		float bgX = isAnchorLeft() ? x - w/10 : x;
-		float textH = font.getBounds(text).height;
+		float textH = font.getLineHeight();
 
 		bg.setPosition(bgX, sh - y);
 		bg.draw(batch);
